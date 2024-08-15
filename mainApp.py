@@ -59,4 +59,4 @@ class StreamlitApp:
             st.audio(audio_bytes, format='audio/wav')
 
 app = StreamlitApp()
-    app.run()
+app.run()
