@@ -20,9 +20,20 @@ class TextToSpeech:
         return torch.tensor(embeddings_dataset[7306]["xvector"]).unsqueeze(0)
 
     def generate_speech(self, text):
-        inputs = self.processor(text=text, return_tensors="pt")
-        speech = self.model.generate_speech(inputs["input_ids"], self.speaker_embeddings, vocoder=self.vocoder)
-        return speech
+        try:
+            # Ensure processor and model are loaded
+            if not self.processor or not self.model or not self.vocoder:
+                raise ValueError("Processor or model not loaded correctly.")
+            
+            # Process text
+            inputs = self.processor(text=text, return_tensors="pt", padding=True)
+            # Generate speech
+            speech = self.model.generate_speech(inputs["input_ids"], self.speaker_embeddings, vocoder=self.vocoder)
+            return speech
+        except Exception as e:
+            print(f"Error generating speech: {e}")
+            return None
+
 
     def convert_text_file_to_speech(self, uploaded_file):
         if uploaded_file is not None:
